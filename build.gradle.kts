@@ -26,10 +26,22 @@ dependencies {
     implementation("org.springframework.ai:spring-ai-starter-mcp-server")
     implementation("org.springframework:spring-web")
     implementation("org.bouncycastle:bcprov-debug-jdk18on:1.79")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
 }
 
 dependencyManagement {
     imports {
         mavenBom("org.springframework.ai:spring-ai-bom:${property("springAiVersion")}")
     }
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
+
+tasks.bootJar {
+    mainClass.set("dev.fromnowon.weifangbusmcpserver.WeifangbusMcpServerApplicationKt")
 }
