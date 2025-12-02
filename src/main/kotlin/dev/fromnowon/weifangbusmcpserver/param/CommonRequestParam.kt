@@ -26,7 +26,7 @@ data class CommonRequestParam(
 
 }
 
-fun CommonRequestParam.payload(): String = sha1(buildString {
+fun CommonRequestParam.toPayload(): String = sha1(buildString {
     append("dataenc").append(dataenc)
     append("hdataenc").append(hdataenc)
     append("joininstid").append(joininstid)

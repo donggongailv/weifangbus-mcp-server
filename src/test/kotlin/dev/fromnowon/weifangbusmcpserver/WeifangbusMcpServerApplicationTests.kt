@@ -12,8 +12,14 @@ class WeifangbusMcpServerApplicationTests() {
     private lateinit var loginService: LoginService
 
     @Test
-    fun getOTP() {
-        loginService.getOTP().also { println(it) }
+    fun login() {
+        val otpResponse = loginService.getOTP().also { println(it) }
+        loginService.login(
+            "你的手机号",
+            "你的密码",
+            checkNotNull(otpResponse.otpcode),
+            checkNotNull(otpResponse.otp)
+        ).also { println(it) }
     }
 
 }

@@ -6,15 +6,9 @@ import com.fasterxml.jackson.annotation.JsonProperty
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class OTPResponse(
 
-    @field:JsonProperty("result")
-    val result: String? = null,
+    @field:JsonProperty("otpcode")
+    val otpcode: String? = null,
 
-    @field:JsonProperty("data")
-    val data: Any? = null,
-
-    @field:JsonProperty("dataenc")
-    val dataenc: String? = null,
-
-    @field:JsonProperty("resultdesc")
-    val resultdesc: String? = null
+    @field:JsonProperty("otp")
+    val otp: String? = null
 )
