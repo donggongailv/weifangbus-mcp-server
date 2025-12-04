@@ -2,6 +2,7 @@ package dev.fromnowon.weifangbusmcpserver.service
 
 import ch.qos.logback.core.encoder.ByteArrayUtil.hexStringToByteArray
 import com.fasterxml.jackson.databind.ObjectMapper
+import dev.fromnowon.weifangbusmcpserver.constant.decoder
 import dev.fromnowon.weifangbusmcpserver.constant.encoder
 import dev.fromnowon.weifangbusmcpserver.param.HData
 import dev.fromnowon.weifangbusmcpserver.util.signature
@@ -25,5 +26,7 @@ class CommonService(private val jacksonObjectMapper: ObjectMapper) {
         val payloadByteArray = hexStringToByteArray(payload)
         return String(encoder.encode(signature(idByteArray, payloadByteArray)))
     }
+
+    fun decrypt(dataenc: String): String = String(sm4(Cipher.DECRYPT_MODE, decoder.decode(dataenc)))
 
 }

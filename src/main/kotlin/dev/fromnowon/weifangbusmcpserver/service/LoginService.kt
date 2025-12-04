@@ -1,7 +1,6 @@
 package dev.fromnowon.weifangbusmcpserver.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import dev.fromnowon.weifangbusmcpserver.constant.decoder
 import dev.fromnowon.weifangbusmcpserver.param.CommonRequestParam
 import dev.fromnowon.weifangbusmcpserver.param.LoginRequestParam
 import dev.fromnowon.weifangbusmcpserver.param.OTPRequestParam
@@ -15,7 +14,6 @@ import org.springframework.ai.tool.annotation.ToolParam
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.requiredBody
-import javax.crypto.Cipher
 
 @Service
 class LoginService(
@@ -39,28 +37,28 @@ class LoginService(
 
         require(response.result == "0000") { response.resultdesc.orEmpty() }
 
-        return response.dataenc?.let { String(sm4(Cipher.DECRYPT_MODE, decoder.decode(it))) }
-            ?.let { dataStr -> jacksonObjectMapper.readValue(dataStr, OTPResponse::class.java) }
+        return response.dataenc?.let { commonService.decrypt(it) }
+            ?.let { jacksonObjectMapper.readValue(it, OTPResponse::class.java) }
             ?: throw IllegalStateException("otp response is null.")
     }
 
     @Tool(description = "账号(手机号)、密码 登录")
     fun login(
         @ToolParam(description = "账号. 例如 手机号") account: String,
-        @ToolParam(description = "密码") password: String,
-        @ToolParam(description = "otpCode") otpCode: String,
-        @ToolParam(description = "otp") otp: String
+        @ToolParam(description = "密码") password: String
     ): LoginResponse {
+        val (otpCode, otp) = getOTP()
+
         val passwordHex = sm3(password.toByteArray()).uppercase()
         val passwordByteArray = hexStringToByteArray(passwordHex)
-        val otpByteArray = hexStringToByteArray(otp)
+        val otpByteArray = hexStringToByteArray(checkNotNull(otp))
         val encryptionPasswordByteArray = encryption(otpByteArray, passwordByteArray)
         val encryptionPasswordHex = byteArrayToHexString(encryptionPasswordByteArray).uppercase()
 
         val loginRequestParam = LoginRequestParam(
             mobilephone = account,
             loginpasswd = encryptionPasswordHex,
-            otpcode = otpCode,
+            otpcode = checkNotNull(otpCode),
             weifangpassword = md5(password)
         )
 
@@ -77,8 +75,8 @@ class LoginService(
 
         require(response.result == "0000") { response.resultdesc.orEmpty() }
 
-        return response.dataenc?.let { String(sm4(Cipher.DECRYPT_MODE, decoder.decode(it))) }
-            ?.let { dataStr -> jacksonObjectMapper.readValue(dataStr, LoginResponse::class.java) }
+        return response.dataenc?.let { commonService.decrypt(it) }
+            ?.let { jacksonObjectMapper.readValue(it, LoginResponse::class.java) }
             ?: throw IllegalStateException("login response is null.")
     }
 
