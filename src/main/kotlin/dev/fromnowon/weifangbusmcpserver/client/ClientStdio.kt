@@ -23,6 +23,8 @@ fun main() {
     client.callTool(McpSchema.CallToolRequest("login", mapOf("account" to account, "password" to password)))
         .also { println(it) }
 
+    client.callTool(McpSchema.CallToolRequest("getAllSubRouteData", null)).also { println(it) }
+
     client.closeGracefully()
 
 }
