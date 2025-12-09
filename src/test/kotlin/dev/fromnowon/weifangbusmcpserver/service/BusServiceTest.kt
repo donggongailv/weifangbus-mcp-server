@@ -15,4 +15,9 @@ class BusServiceTest() {
         busService.getAllSubRouteData().also { println(it) }
     }
 
+    @Test
+    fun getNearbyStatInfo() {
+        busService.getNearbyStatInfo(119.138744, 36.709315).also { println(it) }
+    }
+
 }
