@@ -1,6 +1,7 @@
 package dev.fromnowon.weifangbusmcpserver.service
 
 import dev.fromnowon.weifangbusmcpserver.response.AllSubRouteResponse
+import dev.fromnowon.weifangbusmcpserver.response.ByStationIDReturnAllResponse
 import dev.fromnowon.weifangbusmcpserver.response.NearByStatInfoResponse
 import dev.fromnowon.weifangbusmcpserver.response.RouteStatDataResponse
 import org.springframework.ai.tool.annotation.Tool
@@ -39,6 +40,19 @@ class BusService(private val busRestClient: RestClient, private val commonServic
                 .queryParam("RouteID", commonService.encryptedString(routeId.toString()))
                 .build()
         }.retrieve().requiredBody<List<RouteStatDataResponse>>()
+    }
+
+    @Tool(description = "获取站点信息和相应的车辆信息")
+    fun getByStationIDReturnAll(
+        @ToolParam(description = "线路id") routeId: Int,
+        @ToolParam(description = "站点id") stationId: String
+    ): List<ByStationIDReturnAllResponse> {
+        return busRestClient.get().uri {
+            it.path("/BusService/Query_ByStationIDReturnAll/").queryParams(commonService.queryParams())
+                .queryParam("RouteID", commonService.encryptedString(routeId.toString()))
+                .queryParam("StationID", commonService.encryptedString(stationId))
+                .build()
+        }.retrieve().requiredBody<List<ByStationIDReturnAllResponse>>()
     }
 
 }

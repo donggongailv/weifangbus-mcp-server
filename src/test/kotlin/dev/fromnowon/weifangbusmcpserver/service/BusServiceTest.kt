@@ -7,6 +7,11 @@ import org.springframework.boot.test.context.SpringBootTest
 @SpringBootTest
 class BusServiceTest() {
     @Test
+    fun getByStationIDReturnAll() {
+        busService.getByStationIDReturnAll(17, "55160715165306818201").also { println(it) }
+    }
+
+    @Test
     fun getRouteStatData() {
         busService.getRouteStatData(17).also { println(it) }
     }
