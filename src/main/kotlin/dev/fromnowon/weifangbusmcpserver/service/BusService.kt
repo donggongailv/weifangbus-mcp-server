@@ -2,6 +2,7 @@ package dev.fromnowon.weifangbusmcpserver.service
 
 import dev.fromnowon.weifangbusmcpserver.response.AllSubRouteResponse
 import dev.fromnowon.weifangbusmcpserver.response.NearByStatInfoResponse
+import dev.fromnowon.weifangbusmcpserver.response.RouteStatDataResponse
 import org.springframework.ai.tool.annotation.Tool
 import org.springframework.ai.tool.annotation.ToolParam
 import org.springframework.stereotype.Service
@@ -29,6 +30,15 @@ class BusService(private val busRestClient: RestClient, private val commonServic
                 .queryParam("Range", 1000)
                 .build()
         }.retrieve().requiredBody<List<NearByStatInfoResponse>>()
+    }
+
+    @Tool(description = "获取线路状态数据(线路详情)")
+    fun getRouteStatData(@ToolParam(description = "线路id") routeId: Int): List<RouteStatDataResponse> {
+        return busRestClient.get().uri {
+            it.path("/BusService/Query_RouteStatData/").queryParams(commonService.queryParams())
+                .queryParam("RouteID", commonService.encryptedString(routeId.toString()))
+                .build()
+        }.retrieve().requiredBody<List<RouteStatDataResponse>>()
     }
 
 }

@@ -11,6 +11,7 @@ import dev.fromnowon.weifangbusmcpserver.util.sm4
 import org.springframework.stereotype.Service
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.crypto.Cipher
@@ -55,6 +56,12 @@ class CommonService(private val jacksonObjectMapper: ObjectMapper) {
         val data = (timeStamp + random).toByteArray()
         val hash = Mac.getInstance("HmacSHA256").apply { init(secretKeySpec) }.doFinal(data)
         return hash.joinToString("") { "%02x".format(it) }
+    }
+
+    fun encryptedString(param: String): String {
+        val d = LocalDate.now()
+        val shift = (d.dayOfMonth - d.dayOfWeek.value).let { if (it <= 10) it + 7 else it }
+        return param.map { (it.code + shift).toChar() }.joinToString("")
     }
 
 }

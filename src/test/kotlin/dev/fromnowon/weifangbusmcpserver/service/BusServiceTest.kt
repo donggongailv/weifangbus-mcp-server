@@ -6,6 +6,10 @@ import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
 class BusServiceTest() {
+    @Test
+    fun getRouteStatData() {
+        busService.getRouteStatData(17).also { println(it) }
+    }
 
     @Autowired
     private lateinit var busService: BusService
