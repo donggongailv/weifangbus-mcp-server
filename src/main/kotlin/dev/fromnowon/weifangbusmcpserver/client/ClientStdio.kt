@@ -25,6 +25,13 @@ fun main() {
 
     client.callTool(McpSchema.CallToolRequest("getAllSubRouteData", null)).also { println(it) }
 
+    client.callTool(
+        McpSchema.CallToolRequest(
+            "getByStationIDReturnAll",
+            mapOf("routeId" to 17, "stationId" to "55160715165306818201")
+        )
+    ).also { println(it) }
+
     client.closeGracefully()
 
 }
