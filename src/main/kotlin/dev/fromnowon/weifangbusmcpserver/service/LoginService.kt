@@ -9,8 +9,8 @@ import dev.fromnowon.weifangbusmcpserver.response.CommonResponse
 import dev.fromnowon.weifangbusmcpserver.response.LoginResponse
 import dev.fromnowon.weifangbusmcpserver.response.OTPResponse
 import dev.fromnowon.weifangbusmcpserver.util.*
-import org.springframework.ai.tool.annotation.Tool
-import org.springframework.ai.tool.annotation.ToolParam
+import org.springaicommunity.mcp.annotation.McpTool
+import org.springaicommunity.mcp.annotation.McpToolParam
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.requiredBody
@@ -22,7 +22,7 @@ class LoginService(
     private val jacksonObjectMapper: ObjectMapper
 ) {
 
-    @Tool(description = "获取 OTP")
+    @McpTool(description = "获取 OTP", generateOutputSchema = true)
     fun getOTP(): OTPResponse {
         val dataenc = commonService.dataenc(OTPRequestParam())
         val hdataenc = commonService.hdataenc()
@@ -42,10 +42,10 @@ class LoginService(
             ?: throw IllegalStateException("otp response is null.")
     }
 
-    @Tool(description = "账号(手机号)、密码 登录")
+    @McpTool(description = "账号(手机号)、密码 登录", generateOutputSchema = true)
     fun login(
-        @ToolParam(description = "账号. 例如 手机号") account: String,
-        @ToolParam(description = "密码") password: String
+        @McpToolParam(description = "账号. 例如 手机号") account: String,
+        @McpToolParam(description = "密码") password: String
     ): LoginResponse {
         val (otpCode, otp) = getOTP()
 
